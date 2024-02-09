@@ -1,0 +1,10 @@
+CREATE TABLE expenses (
+    exp_id SERIAL PRIMARY key,
+    title VARCHAR(255),
+    amount FLOAT,
+    date DATE,
+    involved_people VARCHAR(255),
+    split_style INT,
+    category VARCHAR(255),
+    create_nm VARCHAR(255)
+);

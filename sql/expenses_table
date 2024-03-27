@@ -6,5 +6,6 @@ CREATE TABLE expenses (
     involved_people VARCHAR(255),
     split_style INT,
     category VARCHAR(255),
-    create_nm VARCHAR(255)
+    create_nm VARCHAR(255),
+    paid BOOLEAN
 );

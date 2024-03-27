@@ -8,6 +8,10 @@ app = FastAPI()
 def get_all_expenses():
     return {'response': ExpenseService.get_all_expenses()}
 
+@app.get("/expense/getallUnpaid")
+def get_all_expenses():
+    return {'response': ExpenseService.get_all_unpaid_expenses()}
+
 @app.post("/expense/add")
 async def add_expense(exp: Expense):
     return {'response': ExpenseService.add_expense(exp)}

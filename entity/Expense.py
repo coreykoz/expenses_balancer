@@ -13,5 +13,6 @@ class Expense(BaseModel):
     split_style: int
     category: str
     create_nm: str
+    paid: bool
 
 

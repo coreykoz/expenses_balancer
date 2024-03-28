@@ -23,3 +23,7 @@ def delete_expense(exp_id: int):
 @app.put("/expense/update")
 def update_expense(exp: Expense):
     return {'response': ExpenseService.update_expense(exp)}
+
+@app.get("/expense/getSummary")
+def get_all_expenses():
+    return {'response': ExpenseService.get_summary()}

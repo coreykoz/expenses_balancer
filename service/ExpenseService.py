@@ -1,12 +1,13 @@
 from entity.Expense import Expense
 from database import connect
-import constants
+import constants.constants as constant
+from psycopg2.extras import RealDictCursor
 
 db_connection = connect.connect()
 
 def get_all_expenses():
     try:
-        cursor = db_connection.cursor()
+        cursor = db_connection.cursor(cursor_factory=RealDictCursor)
         cursor.execute("SELECT * FROM expenses ORDER BY date desc, exp_id")
         row = cursor.fetchone()
         arr = []
@@ -20,7 +21,7 @@ def get_all_expenses():
 
 def get_all_unpaid_expenses():
     try:
-        cursor = db_connection.cursor()
+        cursor = db_connection.cursor(cursor_factory=RealDictCursor)
         cursor.execute("SELECT * FROM expenses ex WHERE ex.paid = false ORDER BY date desc, exp_id")
         row = cursor.fetchone()
         arr = []
@@ -33,10 +34,10 @@ def get_all_unpaid_expenses():
         return error
 
 def validate_added_expense(expense: Expense):
-    corey_involved = constants.corey in expense.involved_people
-    anna_involved = constants.anna in expense.involved_people
+    corey_involved = constant.COREY in expense.involved_people
+    anna_involved = constant.ANNA  in expense.involved_people
 
-    if constants.split_style_map[expense.split_style] == constants.split_style_1_text or constants.split_style_map[expense.split_style] == constants.split_style_3_text:
+    if constant.SPLIT_STYLE_MAP[expense.split_style] == constant.SPLIT_STYLE_1_TEXT or constant.SPLIT_STYLE_MAP[expense.split_style] == constant.SPLIT_STYLE_3_TEXT:
         return corey_involved and anna_involved
     return (corey_involved and not anna_involved) or (anna_involved and not corey_involved)
 
@@ -83,14 +84,23 @@ def update_expense(expense: Expense):
         print("APP ERROR:", error)
         return error
 
-def get_summary(self):
-    unpaid_expenses = self.get_all_unpaid_expenses()
+def get_summary():
+    unpaid_expenses = get_all_unpaid_expenses()
+    print(unpaid_expenses)
     running_total = 0
-    if unpaid_expenses != null:
+    if unpaid_expenses is not None:
         for expense in unpaid_expenses:
-            value_to_modify = 1
+            value_to_modify_total = expense['amount']
+            ownership_modifier = 1
+            split_style_text = constant.SPLIT_STYLE_MAP[expense['split_style']]
 
-            # corey is postive numbers, anna is negative numbers
-            # figure out who made expense
-            running_total += value_to_modify
+            if split_style_text == constant.SPLIT_STYLE_3_TEXT or split_style_text == constant.SPLIT_STYLE_4_TEXT:
+                ownership_modifier = -1
 
+            if split_style_text == constant.SPLIT_STYLE_1_TEXT or split_style_text == constant.SPLIT_STYLE_3_TEXT:
+                value_to_modify_total = value_to_modify_total / 2
+
+            running_total += (value_to_modify_total * ownership_modifier)
+
+    result = [ constant.ANNA if running_total > 0 else constant.COREY, abs(running_total)]
+    return result

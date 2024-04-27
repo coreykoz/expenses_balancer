@@ -86,7 +86,6 @@ def update_expense(expense: Expense):
 
 def get_summary():
     unpaid_expenses = get_all_unpaid_expenses()
-    print(unpaid_expenses)
     running_total = 0
     if unpaid_expenses is not None:
         for expense in unpaid_expenses:
@@ -104,3 +103,9 @@ def get_summary():
 
     result = [ constant.ANNA if running_total > 0 else constant.COREY, abs(running_total)]
     return result
+
+def settle_up():
+    cursor = db_connection.cursor()
+    cursor.execute("update expenses set paid = true where paid = false")
+
+

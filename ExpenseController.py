@@ -1,12 +1,25 @@
 from fastapi import FastAPI, HTTPException
 from service import ExpenseService
 from entity.Expense import Expense
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+origins = [
+    "http://localhost",
+    "http://localhost:4200",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 @app.get("/expense/getall")
 def get_all_expenses():
-    return {'response': ExpenseService.get_all_expenses()}
+    return {'data': ExpenseService.get_all_expenses()}
 
 @app.get("/expense/getallUnpaid")
 def get_all_expenses():
